@@ -2,15 +2,16 @@ import {React, useState, useEffect} from 'react'
 import {ethers} from 'ethers'
 import styles from './Wallet.module.css'
 import simple_token_abi from './Contracts/simple_token_abi.json'
-import Interactions from './Interactions';
-
+import Transfer from './Transfer.js';
+import Mint from './Mint.js';
+import Burn from './Burn.js';
+// import axios from 'axios';
 var bigInt = require("big-integer");
 
-// import {web3} from 'web3';
 const Wallet = () => {
 
 	// deploy simple token contract and paste deployed contract address here. This value is local ganache chain
-	let contractAddress = '0x01217271f977C7bD833B3373894Ba428381cbfcc';
+	let contractAddress = '0xc10106f9e4108f4519C265425BD3136Aa1166f11';
 
 	const [errorMessage, setErrorMessage] = useState(null);
 	const [defaultAccount, setDefaultAccount] = useState(null);
@@ -36,7 +37,6 @@ const Wallet = () => {
 			})
 			.catch(error => {
 				setErrorMessage(error.message);
-			
 			});
 
 		} else {
@@ -48,6 +48,7 @@ const Wallet = () => {
 	// update account, will cause component re-render
 	const accountChangedHandler = (newAccount) => {
 		setDefaultAccount(newAccount);
+		updateBalance();
 		updateEthers();
 	}
 
@@ -63,23 +64,23 @@ const Wallet = () => {
 		}
 	}
 
-   function toFixed(x) {
-   if (Math.abs(x) < 1.0) {
-      var e = parseInt(x.toString().split('e-')[1]);
-      if (e) {
-         x *= Math.pow(10, e - 1);
-         x = '0.' + (new Array(e)).join('0') + x.toString().substring(2);
-      }
-   } else {
-      var e = parseInt(x.toString().split('+')[1]);
-      if (e > 20) {
-         e -= 20;
-         x /= Math.pow(10, e);
-         x += (new Array(e + 1)).join('0');
-      }
-   }
-   return x;
-}
+	function toFixed(x) {
+		if (Math.abs(x) < 1.0) {
+			var e = parseInt(x.toString().split('e-')[1]);
+			if (e) {
+				x *= Math.pow(10, e - 1);
+				x = '0.' + (new Array(e)).join('0') + x.toString().substring(2);
+			}
+		} else {
+			var e = parseInt(x.toString().split('+')[1]);
+			if (e > 20) {
+				e -= 20;
+				x /= Math.pow(10, e);
+				x += (new Array(e + 1)).join('0');
+			}
+		}
+		return x;
+	}	
 
 	const chainChangedHandler = () => {
 		// reload the page to avoid any errors with chain change mid use of application
@@ -98,9 +99,17 @@ const Wallet = () => {
 
 		let tempSigner = tempProvider.getSigner();
 		setSigner(tempSigner);
-
+		
+		// axios.get('https://back.abbas.com/api/contracts')
+		// .then(function (response) {
+		// 	let tempContract = new ethers.Contract(contractAddress, response.data, tempSigner);
+		// 	setContract(tempContract);	
+		// // setContract(tempContract);	
+		// 	// setContract(tempContract);	
+		// })
+		
 		let tempContract = new ethers.Contract(contractAddress, simple_token_abi, tempSigner);
-		setContract(tempContract);	
+		setContract(tempContract);
 	}
 
 	useEffect(() => {
@@ -123,14 +132,18 @@ const Wallet = () => {
 			<div>
 				<h3>Address: {defaultAccount}</h3>
 			</div>
-
+			
 			<div>
 				<h3>{tokenName} Balance: {balance}</h3>
 			</div>
 
 			{errorMessage}
 		</div>
-		<Interactions contract = {contract}/>
+		<Transfer contract = {contract}/>
+		<br></br>
+		<Mint contract = {contract}/>
+		<br></br>
+		<Burn contract = {contract}/>
 	</div>
 	)
 }

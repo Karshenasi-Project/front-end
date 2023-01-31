@@ -2,7 +2,7 @@ import {React, useState} from 'react'
 import styles from './Wallet.module.css';
 var bigInt = require("big-integer");
 
-const Interactions = (props) => {
+const Transer = (props) => {
 
 	const [transferHash, setTransferHash] = useState();
 
@@ -16,6 +16,7 @@ const Interactions = (props) => {
 			let recieverAddress = e.target.recieverAddress.value;
 			
 			let txt2 = props.contract.transfer(recieverAddress, transferAmount.toString())
+			console.log(props.contract)
 			.then(function(txt) {
 				setTransferHash("Transfer confirmation hash: " + txt.hash);
 			}, function(error) {
@@ -47,4 +48,4 @@ const Interactions = (props) => {
 	
 }
 
-export default Interactions;
+export default Transer;
