@@ -5,16 +5,21 @@ import simple_token_abi from './Contracts/simple_token_abi.json'
 import Transfer from './Transfer.js';
 import Mint from './Mint.js';
 import Burn from './Burn.js';
+import Approve from './Approve.js';
+import NumberToPublicKey from './NumberToPublicKey.js';
+import SendSms from './SendSms';
+import AddToBalance from './AddToBalance';
+import SignIn from './SignIn';
 // import axios from 'axios';
 var bigInt = require("big-integer");
 
 const Wallet = () => {
 
 	// deploy simple token contract and paste deployed contract address here. This value is local ganache chain
-	let contractAddress = '0xc10106f9e4108f4519C265425BD3136Aa1166f11';
+	let contractAddress = '0xdEF2727500E1A03bd18311334E8D2F77Cf503766';
 
 	const [errorMessage, setErrorMessage] = useState(null);
-	const [defaultAccount, setDefaultAccount] = useState(null);
+	const [defaultAccount, setDefaultAccount] = useState('');
 	const [connButtonText, setConnButtonText] = useState('Connect Wallet');
 
 	const [provider, setProvider] = useState(null);
@@ -23,6 +28,7 @@ const Wallet = () => {
 
 	const [tokenName, setTokenName] = useState("Token");
 	const [balance, setBalance] = useState(null);
+	const [owner, setOwner] = useState('');
 	const [transferHash, setTransferHash] = useState(null);
 
 
@@ -43,6 +49,8 @@ const Wallet = () => {
 			console.log('Need to install MetaMask');
 			setErrorMessage('Please install MetaMask browser extension to interact');
 		}
+		// console.log(defaultAccount)
+		// console.log(owner)
 	}
 
 	// update account, will cause component re-render
@@ -116,15 +124,20 @@ const Wallet = () => {
 		if (contract != null) {
 			updateBalance();
 			updateTokenName();
+			updateOwner();
 		}
 	}, [contract]);
 
 	const updateTokenName = async () => {
 		setTokenName(await contract.name());
 	}
+
+	const updateOwner = async () => {
+		setOwner(await contract.owner());
+	}
 	
 	return (
-	<div>
+		<div>
 			<h2> {tokenName + " ERC-20 Wallet"} </h2>
 			<button className={styles.button6} onClick={connectWalletHandler}>{connButtonText}</button>
 
@@ -139,11 +152,27 @@ const Wallet = () => {
 
 			{errorMessage}
 		</div>
-		<Transfer contract = {contract}/>
+		{owner.toLowerCase() != defaultAccount ? <Transfer contract = {contract}/> : '' }
+
+		
+		{owner.toLowerCase() != defaultAccount ? <Approve contract = {contract}/> : '' }
+		
+		{owner.toLowerCase() == defaultAccount ? <Mint contract = {contract}/> : '' }
+
+		{owner.toLowerCase() == defaultAccount ? <Burn contract = {contract}/> : ''}
+
+		<NumberToPublicKey contract = {contract}/>
+	
+		{owner.toLowerCase() != defaultAccount ? <SendSms contract = {contract}/> : '' }
+		
+		{owner.toLowerCase() == defaultAccount ? <AddToBalance contract = {contract}/> : '' }
+		
+		{owner.toLowerCase() != defaultAccount ? <SignIn contract = {contract} account = {defaultAccount}/> : '' }
+
+		
+
 		<br></br>
-		<Mint contract = {contract}/>
-		<br></br>
-		<Burn contract = {contract}/>
+
 	</div>
 	)
 }

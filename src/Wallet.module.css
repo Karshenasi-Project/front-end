@@ -1,8 +1,10 @@
 
 .walletCard {
 	text-align: left;
-	width: 50%;
-	margin: auto;
+	width: 90%;
+	height: 100px;
+
+	margin: 15px auto 15px auto;
 	border-radius: 10px;
 	background-color: #A1C6EA;
 	box-shadow: 0.2em 0.2em 0 0.2em rgba(0,0,0,0.17);
@@ -17,8 +19,9 @@
 .interactionsCard {
 	display: flex;
 	flex-direction: column;
-	width: 50%;
-	margin: auto;
+	width: 90%;
+	margin: 15px auto 15px auto;
+
 	padding-bottom: 1em;
 	border-radius: 10px;
 	background-color: #507DBC;

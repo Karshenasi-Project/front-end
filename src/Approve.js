@@ -2,14 +2,13 @@ import {React, useState} from 'react'
 import styles from './Wallet.module.css';
 var bigInt = require("big-integer");
 
-const Mint = (props) => {
+const Approve = (props) => {
 
 	const [transferHash, setTransferHash] = useState();
 
 
-	const mintHandler = async (e) => {
+	const approveHandler = async (e) => {
 		e.preventDefault();
-		// console.log(props.contract.decimals());
 		let decimals = await props.contract.decimals();
 		console.log(decimals);
 
@@ -19,7 +18,7 @@ const Mint = (props) => {
 			// let transferAmount = target;
 			let recieverAddress = e.target.recieverAddress.value;
 			
-			let txt2 = props.contract.mint(recieverAddress, transferAmount.toString())
+			let txt2 = props.contract.approve(recieverAddress, transferAmount.toString())
 			.then(function(txt) {
 				setTransferHash("Transfer confirmation hash: " + txt.hash);
 			}, function(error) {
@@ -33,12 +32,12 @@ const Mint = (props) => {
 
 	return (
 			<div className={styles.interactionsCard}>
-				<form onSubmit={mintHandler}>
-					<h3> Mint Coins </h3>
-						<p> Reciever Address </p>
+				<form onSubmit={approveHandler}>
+					<h3> Approve Coins </h3>
+						<p> Approve Address </p>
 						<input type='text' id='recieverAddress' className={styles.addressInput}/>
 
-						<p> Send Amount </p>
+						<p> Approve Amount </p>
 						<input type='number' id='mintAmount' min='0' step='1'/>
 
 						<button type='submit' className={styles.button6}>Send</button>
@@ -51,4 +50,4 @@ const Mint = (props) => {
 	
 }
 
-export default Mint;
+export default Approve;

@@ -10,7 +10,7 @@ const Burn = (props) => {
 	const burnHandler = async (e) => {
 		e.preventDefault();
 		let decimals = await props.contract.decimals();
-		let target = e.target.mintAmount.value;
+		let target = e.target.burnAmount.value;
 		if(isNaN(target) == false){
 			let transferAmount = bigInt(e.target.burnAmount.value).multiply(bigInt(10).pow(decimals));
 			// let transferAmount = target;
